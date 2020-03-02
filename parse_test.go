@@ -8,37 +8,36 @@ import (
 
 func TestParseSingleMetadataLines(t *testing.T) {
 	tcs := []struct {
-		inputLine string
-		expected *Metadata
+		inputLines []string
+		expected   *Metadata
 	}{
 		{
-			`; [Player 1 "Kubota Kanade"]`,
-			&Metadata{
-				Player1: "Kubota Kanade",
+			[]string{
+				//`; [Site ""]`,
+				//`; [Match ID "-618558043"]`,
+				`; [Player 1 "Kubota Kanade"]`,
+				`; [Player 2 "Moriuchi Toshiyuki"]`,
+				`; [Player 1 Elo "1600.00/0"]`,
+				`; [Player 2 Elo "1100.00/0"]`,
+				`; [EventDate "2020.02.24"]`,
+				`; [EventTime "13.54"]`,
+				//`; [Variation "Backgammon"]`,
+				//`; [Unrated "Off"]`,
+				//`; [Crawford "On"]`,
+				//`; [CubeLimit "1024"]`,
 			},
-		},
-		{
-			`; [Player 2 "Moriuchi Toshiyuki"]`,
 			&Metadata{
-				Player2: "Moriuchi Toshiyuki",
-			},
-		},
-		{
-			`; [Player 1 Elo "1600.00/0"]`,
-			&Metadata{
+				//Site:       "",
+				//MatchID:    "-618558043",
+				Player1:    "Kubota Kanade",
+				Player2:    "Moriuchi Toshiyuki",
 				Player1Elo: "1600.00/0",
-			},
-		},
-		{
-			`; [Player 2 Elo "1100.00/0"]`,
-			&Metadata{
 				Player2Elo: "1100.00/0",
-			},
-		},
-		{
-			`; [EventDate "2020.02.24"]`,
-			&Metadata{
-				EventDate: time.Date(2020,02,24,0,0,0,0,time.UTC),
+				EventTime:  time.Date(2020, 02, 24, 13, 54, 0, 0, time.UTC),
+				//Variation:  "Backgammon",
+				//Unrated:    false,
+				//Crawford:   true,
+				//CubeLimit:  1024,
 			},
 		},
 	}
@@ -47,7 +46,7 @@ func TestParseSingleMetadataLines(t *testing.T) {
 
 		md := &Metadata{}
 
-		err := parseMetadataString(tc.inputLine, md)
+		err := parseMetadata(tc.inputLines, md)
 
 		assert.NoError(t, err)
 		assert.Equal(t, tc.expected, md)
